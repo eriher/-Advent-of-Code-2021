@@ -1,17 +1,60 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <iterator>
-
 
 template <typename T>
 static void readInput(std::string path, std::vector<T>& data){
-    std::ifstream fs("input.txt");
+    std::ifstream fs(path);
     if(!fs){
         std::cout << "File not found" << std::endl;
         return;
     }
-    std::copy(std::istream_iterator<T>(fs),
-        std::istream_iterator<T>(),
-        std::back_inserter(data));
+    for(T v; fs >> v;)
+        data.push_back(v);
+}
+
+template <typename T>
+static std::vector<T> readInput(std::string path){
+    std::ifstream fs(path);
+    if(!fs){
+        std::cout << "File not found" << std::endl;
+        return {};
+    }
+    std::vector<T> data;
+    for(T v; fs >> v;)
+        data.push_back(v);
+    return data;
+}
+
+static std::vector<std::string> readLines(std::string path){
+    std::ifstream fs(path);
+    if(!fs){
+        std::cout << "File not found" << std::endl;
+        return {};
+    }
+    std::vector<std::string> data;
+    for(std::string s;getline(fs,s);)
+        data.push_back(s);
+    return data;
+}
+
+template<typename T1, typename T2>
+static std::vector<std::pair<T1,T2>> readPairs(std::string path){
+    std::ifstream fs(path);
+    if(!fs){
+        std::cout << "File not found" << std::endl;
+        return {};
+    }
+    std::vector<std::pair<T1,T2>> data;
+    while(fs && !fs.eof()){
+        T1 s;
+        T2 v;
+        fs >> s;
+        if(fs.eof())
+            break;
+        fs >> v;
+        data.push_back(make_pair(s,v));
+    }
+        
+    return data;
 }
