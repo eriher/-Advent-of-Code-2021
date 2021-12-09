@@ -7,7 +7,7 @@
 
 
 int task1(std::vector<std::pair<std::string,int>>& data){
-    int x = 0, y = 0;
+    int x, y;
     for(auto& pair:data){
         if(pair.first == "forward") {
             x += pair.second;
@@ -26,12 +26,10 @@ int task2(std::vector<std::pair<std::string,int>>& data){
         if(pair.first == "forward"){
             x += pair.second;
             y = std::max(0,y+pair.second*aim);
-        } else {
-            if(pair.first == "up"){
+        } else if(pair.first == "up"){
                 aim -= pair.second;
-            } else {
+        } else {
                 aim += pair.second;
-            }
         }
     }
     return x * y;

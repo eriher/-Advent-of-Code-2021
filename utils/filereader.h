@@ -34,7 +34,10 @@ static std::vector<std::string> readLines(std::string path){
     }
     std::vector<std::string> data;
     for(std::string s;getline(fs,s);)
-        data.push_back(s);
+    {
+        if(s.size() > 0)
+            data.push_back(s);
+    }
     return data;
 }
 
@@ -58,3 +61,41 @@ static std::vector<std::pair<T1,T2>> readPairs(std::string path){
         
     return data;
 }
+
+static std::vector<int> readInts(std::string path) {
+    std::ifstream fs(path);
+    if(!fs){
+        std::cout << "File not found" << std::endl;
+        return {};
+    }
+    std::vector<int> data;
+    for(int i; fs >> i;){
+        data.push_back(i);
+        if(fs.eof())
+            break;
+        char c;
+        fs >> c;
+        if(c != ',')
+            break;
+    }
+    return data;
+}
+
+// static std::vector<std::vector<int>> readGrid(std::string path){
+//     std::ifstream fs(path);
+//     if(!fs){
+//         std::cout << "File not found" << std::endl;
+//         return {};
+//     }
+//     std::vector<std::vector<int>> data;
+//     for(int i; fs >> i;){
+//         data.push_back(i);
+//         if(fs.eof())
+//             break;
+//         char c;
+//         fs >> c;
+//         if(c != ',')
+//             break;
+//     }
+//     return data;
+// }
