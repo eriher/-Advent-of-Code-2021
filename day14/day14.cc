@@ -1,19 +1,45 @@
 #include <iostream>
-#include <vector>
 #include "../utils/filereader.h"
-#include <stack>
 #include <unordered_map>
 #include <algorithm>
 #include <sstream>
-#include <unordered_set>
 
 std::unordered_map<std::string,char> polymers;
 
-std::string task1(char a, char b, int depth){    
-    char c = polymers[{a,b}];
-    if(depth < 2)
-        return {a,c};
-    return task1(a,c,depth-1)+task1(c,b,depth-1);    
+uint64_t takeSteps(std::string s, int steps){
+    std::unordered_map<std::string,uint64_t> counts;
+    for(int i = 1; i < s.size(); i++){
+        counts[{s[i-1],s[i]}]++;
+    }
+
+    for(int i = 0; i < steps; i++){
+        auto it = counts.begin();
+
+        std::unordered_map<std::string,uint64_t> counts2;
+        while(it != counts.end()){
+            char a = (*it).first.front();
+            char b = polymers[(*it).first];
+            char c = (*it).first.back();
+            auto count = (*it).second;            
+            counts2[{a,b}] += count;
+            counts2[{b,c}] += count;
+            it++;
+        }
+        counts = counts2;
+    }
+
+    std::unordered_map<char,uint64_t> elems{{s.back(),1}};
+    for(auto&kv:counts){
+        elems[kv.first.front()] += kv.second;
+    }
+
+    auto max = *(std::max_element(elems.begin(), elems.end(),
+            [](const auto& l, const auto& r) { return l.second < r.second; }));
+    auto min = *(std::min_element(elems.begin(), elems.end(),
+            [](const auto& l, const auto& r) { return l.second < r.second; }));
+         
+    return max.second - min.second;
+    
 }
 
 int main() {
@@ -30,24 +56,6 @@ int main() {
         lines.pop_back();
     }
     auto poly = lines.back();
-
-    std::ostringstream result;
-    for(int j = 1; j < poly.size(); j++){
-        result << task1(poly[j-1],poly[j],15);
-    }        
-    result << poly.back();
-    auto s = result.str();
-    std::unordered_map<char,long long> freq;
-    long long min = LLONG_MAX;
-    long long max = 0;
-    for(auto& c:s){
-        freq[c]++;
-    }
-    for(auto&kv:freq){
-        if(kv.second > max)
-            max = kv.second;
-        if(kv.second < min)
-            min = kv.second;
-    }
-    std::cout << max-min << std::endl;
+    std::cout << takeSteps(poly,10) << std::endl;
+    std::cout << takeSteps(poly,40) << std::endl;
 }
